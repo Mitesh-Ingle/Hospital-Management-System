@@ -9,24 +9,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tka.entity.Doctor;
 import com.tka.entity.Patient;
+import com.tka.service.DoctorService;
 import com.tka.service.PatientService;
 
 @RestController
-@RequestMapping("/patients")
-public class PatientController {
+@RequestMapping("/doctors")
+public class DoctorController {
 
 	@Autowired
-	PatientService patientService;
+	DoctorService doctorService;
 
-	@PostMapping("/add")
-	public String addPatient(@RequestBody Patient patient) {
-		System.err.println("In AddPatient Controller");
-		return patientService.addPatient(patient);
+	@PostMapping("/add-doctor")
+	public String addDoctor(@RequestBody Doctor doctor) {
+		System.err.println(doctor);
+		System.err.println("In AddDoctor Controller");
+		return doctorService.addDoctor(doctor);
 	}
 
-	@GetMapping("/get-patients")
-	public List<Patient> getPatient() {
-		return patientService.getPatient();
+	@GetMapping("/get-all-doctors")
+	public List<Doctor> getAllDoctor() {
+		System.err.println("In getAll Doctor Controller");
+		return doctorService.getAllDoctor();
 	}
 }
