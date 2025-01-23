@@ -24,6 +24,11 @@ public class AppointmentService {
 	public List<Appointment> getAllAppointment() {
 		return appointmentDao.getAllAppointment();
 	}
+
+
+	public Object getAppointmentById(Long aId) {
+		return appointmentDao.getAppointmentById(aId);
+	}
 	
 	
 	

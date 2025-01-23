@@ -23,5 +23,9 @@ public class DoctorService {
 	public List<Doctor> getAllDoctor() {
 		return doctorDao.getAllDoctor();
 	}
+
+	public Object getDoctorById(Long id) {
+		return doctorDao.getDoctorById(id);
+	}
 	
 }

@@ -2,8 +2,11 @@ package com.tka.controller;
 
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,5 +31,10 @@ public class PatientController {
 	@GetMapping("/get-patients")
 	public List<Patient> getPatient() {
 		return patientService.getPatient();
+	}
+	
+	@GetMapping("/get-by-id/{pId}")
+	public Object getPatientById(@PathVariable Long pId) {
+		return patientService.getPatientById(pId);
 	}
 }

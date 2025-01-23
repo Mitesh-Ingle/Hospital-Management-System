@@ -55,25 +55,14 @@ public class DepartmentDao {
 	}
 
 	public Object getDepartmentById(Long dId) {
-		Session session = null;
-		Department department = null;
-		try {
-			session = sessionFactory.openSession();
-			department = session.get(Department.class, dId);
-			if (department != null) {
-				return department; // Return department in JSON format if found
-			} else {
-				return "Department not found for ID: " + dId; // Return custom message if not found
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (session != null) {
-				session.close();
-			}
-		}
-		return department;
+		Session session = sessionFactory.openSession();
+		Department department = session.get(Department.class,dId);
 
+		if (department != null) {
+			return department; // Return the team if found
+		} else {
+			return "department with provided ID not found"; // Return a message if not found
+		}
 	}
 
 }

@@ -77,13 +77,18 @@ public class AppointmentDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-		
-		
-		
+
 		return appointmentsList;
+	}
+
+	public Object getAppointmentById(Long aId) {
+		Session session = sessionFactory.openSession();
+		Appointment appointment = session.get(Appointment.class, aId);
+		if (appointment != null) {
+			return appointment;
+		} else {
+			return "Appointment with provided ID not found";
+		}
 	}
 
 }

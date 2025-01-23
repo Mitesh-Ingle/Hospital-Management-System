@@ -84,4 +84,15 @@ public class DoctorDao {
 		return doctorsList;
 	}
 
+	public Object getDoctorById(Long id) {
+		Session session = factory.openSession();
+		Doctor doctor = session.get(Doctor.class, id);
+		if (doctor != null) {
+			return doctor;
+		} else {
+			return "Doctor with Id not found Provide valid Id";
+		}
+
+	}
+
 }

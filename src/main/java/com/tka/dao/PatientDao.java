@@ -98,4 +98,14 @@ public class PatientDao {
 		}
 		return patientsList;
 	}
+
+	public Object getPatientById(Long pId) {
+		Session session = sessionFactory.openSession();
+		Patient patient = session.get(Patient.class, pId);
+		if (patient != null) {
+			return patient;
+		} else {
+			return "Patient no found with the provided ID";
+		}
+	}
 }

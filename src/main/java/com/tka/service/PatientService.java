@@ -22,6 +22,10 @@ public class PatientService {
 	public List<Patient> getPatient() {
 		return patientDao. getPatient();
 	}
+
+	public Object getPatientById(Long pId) {
+		return patientDao.getPatientById(pId);
+	}
 	
 
 

@@ -4,15 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tka.entity.Doctor;
-import com.tka.entity.Patient;
 import com.tka.service.DoctorService;
-import com.tka.service.PatientService;
 
 @RestController
 @RequestMapping("/doctors")
@@ -32,5 +31,10 @@ public class DoctorController {
 	public List<Doctor> getAllDoctor() {
 		System.err.println("In getAll Doctor Controller");
 		return doctorService.getAllDoctor();
+	}
+
+	@GetMapping("/get-by-id/{id}")
+	public Object getDoctorById(@PathVariable Long id) {
+		return doctorService.getDoctorById(id);
 	}
 }
