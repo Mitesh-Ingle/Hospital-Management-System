@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,7 @@ public class DepartmentDao {
 	}
 
 	public List<Department> getAllDepartments() {
+		System.err.println("In Get All Department Dao");
 		List<Department> departmentsList = new ArrayList<>();
 		try {
 			Session session = sessionFactory.openSession();
@@ -51,6 +51,28 @@ public class DepartmentDao {
 			e.printStackTrace();
 		}
 		return departmentsList;
+
+	}
+
+	public Object getDepartmentById(Long dId) {
+		Session session = null;
+		Department department = null;
+		try {
+			session = sessionFactory.openSession();
+			department = session.get(Department.class, dId);
+			if (department != null) {
+				return department; // Return department in JSON format if found
+			} else {
+				return "Department not found for ID: " + dId; // Return custom message if not found
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		return department;
 
 	}
 

@@ -1,6 +1,6 @@
 package com.tka.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table(name = "appointments")
 public class Appointment {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long aId;
@@ -26,19 +27,11 @@ public class Appointment {
 	@ManyToOne
 	@JoinColumn(name = "patient_id")
 	private Patient patient;
-	
-	 @JsonFormat(pattern = "dd MMM yyyy hh:mm a", shape = JsonFormat.Shape.STRING)
-		private Date appointmentDate;
 
-	public Appointment(Long aId, Doctor doctor, Patient patient, Date appointmentDate) {
-		super();
-		this.aId = aId;
-		this.doctor = doctor;
-		this.patient = patient;
-		this.appointmentDate = appointmentDate;
-	}
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
+	private LocalDateTime appointmentDate;
 
-	public Appointment(Doctor doctor, Patient patient, Date appointmentDate) {
+	public Appointment(Doctor doctor, Patient patient, LocalDateTime appointmentDate) {
 		super();
 		this.doctor = doctor;
 		this.patient = patient;
@@ -73,18 +66,12 @@ public class Appointment {
 		this.patient = patient;
 	}
 
-	public Date getAppointmentDate() {
+	public LocalDateTime getAppointmentDate() {
 		return appointmentDate;
 	}
 
-	public void setAppointmentDate(Date appointmentDate) {
+	public void setAppointmentDate(LocalDateTime appointmentDate) {
 		this.appointmentDate = appointmentDate;
-	}
-
-	@Override
-	public String toString() {
-		return "Appointment [aId=" + aId + ", doctor=" + doctor + ", patient=" + patient + ", appointmentDate="
-				+ appointmentDate + "]";
 	}
 
 }

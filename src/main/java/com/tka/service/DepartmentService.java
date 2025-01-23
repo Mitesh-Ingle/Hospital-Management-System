@@ -18,8 +18,13 @@ public class DepartmentService {
 		System.err.println("In Department Service");
 		return departmentDao.addDepartment(department);
 	}
+	
 	 public List<Department> getAllDepartments() {
 		    System.err.println("Inside getAllDepartments service");
 	        return departmentDao.getAllDepartments();
 	    }
+	 
+	public Object getDepartmentById(Long dId) {
+		return (Department) departmentDao.getDepartmentById(dId);
+	}
 }
