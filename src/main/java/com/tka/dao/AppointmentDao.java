@@ -77,6 +77,12 @@ public class AppointmentDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
+		
+		
+		
+		
 		return appointmentsList;
 	}
 
