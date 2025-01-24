@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,9 +39,15 @@ public class DoctorController {
 	public Object getDoctorById(@PathVariable Long id) {
 		return doctorService.getDoctorById(id);
 	}
-	
+
 	@GetMapping("/get-by-name")
 	public Object getDoctorByName(@RequestParam String name) {
 		return doctorService.getDoctorByName(name);
 	}
+
+	@PutMapping("/update-doctor")
+	public String updateDoctor(@RequestBody Doctor doctor) {
+		return doctorService.updateDoctor(doctor);
+	}
+
 }

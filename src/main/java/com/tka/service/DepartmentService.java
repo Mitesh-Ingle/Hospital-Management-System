@@ -35,4 +35,8 @@ public class DepartmentService {
 	public String updateDepartment(Department department) {
 		return departmentDao.updateDepartment(department);
 	}
+
+	public Object deleteDepartment(Long dId) {
+		return departmentDao.deleteDepartment(dId);
+	}
 }

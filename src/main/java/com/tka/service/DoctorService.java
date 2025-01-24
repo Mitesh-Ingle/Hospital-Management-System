@@ -31,5 +31,9 @@ public class DoctorService {
 	public Object getDoctorByName(String name) {
 		return doctorDao.getDoctorByName(name);
 	}
+
+	public String updateDoctor(Doctor doctor) {
+		return doctorDao.updateDoctor(doctor) ;
+	}
 	
 }

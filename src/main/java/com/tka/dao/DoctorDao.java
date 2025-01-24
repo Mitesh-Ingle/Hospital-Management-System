@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,4 +109,40 @@ public class DoctorDao {
 		}
 	}
 
+	public String updateDoctor(Doctor doctor) {
+
+		Session session = factory.openSession();
+		Transaction transaction = session.beginTransaction();
+		try {
+			Doctor existingDoc = session.get(Doctor.class, doctor.getId());
+			if (existingDoc != null) {
+
+				if (existingDoc.getName().equals(doctor.getName())
+						&& existingDoc.getSpecialty().equals(doctor.getSpecialty())
+						&& existingDoc.getContactNumber().equals(doctor.getContactNumber())
+						&& existingDoc.getEmail().equals(doctor.getEmail())) {
+					return "No changes made, Name , speciality, contactnumber, email are same ";
+
+				}
+
+				existingDoc.setName(doctor.getName());
+				existingDoc.setSpecialty(doctor.getSpecialty());
+				existingDoc.setContactNumber(doctor.getContactNumber());
+				existingDoc.setEmail(doctor.getEmail());
+
+				session.update(existingDoc);
+				transaction.commit();
+				return "Doctor updated Successfully";
+
+			} else {
+				return "Doctor not present with provided Id : " + doctor.getId() + " Enter Valid Id";
+			}
+		} catch (Exception e) {
+			transaction.rollback(); // Rollback the transaction in case of error
+			e.printStackTrace();
+			return "An error occurred while updating the doctor: " + e.getMessage();
+		} finally {
+			session.close(); // Ensure the session is closed
+		}
+	}
 }

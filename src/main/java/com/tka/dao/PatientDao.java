@@ -1,14 +1,13 @@
 package com.tka.dao;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -112,15 +111,55 @@ public class PatientDao {
 	public Object getPatientByName(String pName) {
 		Session session = sessionFactory.openSession();
 		String hql = "FROM Patient WHERE pName = :pName";
-		Query<Patient> query =  session.createQuery(hql , Patient.class);
+		Query<Patient> query = session.createQuery(hql, Patient.class);
 		query.setParameter("pName", pName);
 		Patient patient = query.uniqueResult();
-		
+
 		if (patient != null) {
 			return patient;
 
 		} else {
 			return "Patient With Provided name not available: " + pName;
 		}
+	}
+
+	public String updatePatient(Patient patient) {
+
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+
+		try {
+			Patient existingPatinet = session.get(Patient.class, patient.getpId());
+			if (existingPatinet != null) {
+				if (existingPatinet.getpName().equals(patient.getpName())
+						&& existingPatinet.getpDisease().equals(patient.getpDisease())
+						&& existingPatinet.getpContact().equals(patient.getpContact())
+						&& existingPatinet.getpEmail().equals(patient.getpEmail())) {
+					return "No changes were made as the Patient's: Name, Disease, Contact, and Email remain the same.";
+				}
+				existingPatinet.setpName(patient.getpName());
+				existingPatinet.setpDisease(patient.getpDisease());
+				existingPatinet.setpContact(patient.getpContact());
+				existingPatinet.setpAddress(patient.getpAddress());
+				existingPatinet.setpEmail(patient.getpEmail());
+
+				session.update(existingPatinet);
+				transaction.commit();
+
+				return "Patient Updated Successfully";
+
+			} else {
+				return "Patient with provided ID :" + patient.getpId() + "not present ENTER VALID ID";
+
+			}
+
+		} catch (Exception e) {
+			transaction.rollback();
+			e.printStackTrace();
+			return "Error occur while updating patient " + e.getMessage();
+		} finally {
+			session.close();
+		}
+
 	}
 }

@@ -3,6 +3,7 @@ package com.tka.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,17 +42,24 @@ public class DepartmentController {
 	public Object getDepartmentById(@PathVariable("dId") Long dId) {
 		return departmentService.getDepartmentById(dId);
 	}
-	
+
 	@GetMapping("/get-by-name")
 	public Object getDepartmentByName(@RequestParam String dName) {
 		return departmentService.getDepartmentByName(dName);
-		
+
 	}
-	
+
 	@PutMapping("/update-department")
 	public String updateDepartment(@RequestBody Department department) {
 		return departmentService.updateDepartment(department);
-		
+
 	}
+
+
+	@DeleteMapping("/delete-department/{dId}")
+	public Object deleteDepartment(@PathVariable Long dId) {
+	    return departmentService.deleteDepartment(dId);
+	}
+
 
 }

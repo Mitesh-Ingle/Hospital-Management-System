@@ -28,7 +28,7 @@ public class Appointment {
 	@JoinColumn(name = "patient_id")
 	private Patient patient;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime appointmentDate;
 
 	public Appointment(Doctor doctor, Patient patient, LocalDateTime appointmentDate) {

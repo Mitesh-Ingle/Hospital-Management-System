@@ -105,4 +105,32 @@ public class DepartmentDao {
 			return "Department with ID " + department.getdId() + " does not exist. Please provide a valid ID.";
 		}
 	}
+
+	public String deleteDepartment(Long dId) {
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+
+		// Fetch the department using the provided ID
+		Department department = session.get(Department.class, dId);
+
+		if (department != null) {
+			// Set all doctors associated with the department to have a NULL department_id
+			String hqlUpdateDoctors = "UPDATE Doctor SET department.id = NULL WHERE department.id = :dId";
+			Query query = session.createQuery(hqlUpdateDoctors);
+			query.setParameter("dId", dId);
+			query.executeUpdate(); // Update the doctors to remove department reference
+
+			// Now, delete the department
+			session.delete(department);
+			transaction.commit(); // Commit the transaction
+			session.close();
+			return "Department with ID " + dId
+					+ " and its associated doctors' department references removed successfully.";
+		} else {
+			// If no department found with the given ID
+			session.close();
+			return "Department with provided ID: " + dId + " not found.";
+		}
+	}
+
 }

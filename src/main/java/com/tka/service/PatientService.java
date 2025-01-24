@@ -31,4 +31,8 @@ public class PatientService {
 		return patientDao.getPatientByName(pName);
 	}
 
+	public String updatePatient(Patient patient) {
+		return patientDao.updatePatient(patient);
+	}
+
 }

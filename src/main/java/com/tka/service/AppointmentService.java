@@ -35,6 +35,11 @@ public class AppointmentService {
 	public Object getAppointmentByDate(LocalDateTime appointmentDate) {
 		return appointmentDao.getAppointmentByDate(appointmentDate);
 	}
+
+
+	public String updateAppointment(Appointment appointment) {
+		return appointmentDao.updateAppointment(appointment);
+	}
 	
 	
 	

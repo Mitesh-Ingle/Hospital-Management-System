@@ -4,17 +4,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Parameter;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.tka.entity.Appointment;
+import com.tka.entity.Department;
 
 @Repository
 public class AppointmentDao {
@@ -113,6 +113,32 @@ public class AppointmentDao {
 		} else {
 			System.err.println(8);
 			return "Appointment not available with provided date : " + appointmentDate;
+		}
+	}
+
+	public String updateAppointment(Appointment appointment) {
+		Session session = sessionFactory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			Appointment existingAppo = session.get(Appointment.class, appointment.getaId());
+			if (existingAppo != null) {
+				if (existingAppo.getAppointmentDate().equals(appointment.getAppointmentDate())) {
+					return "No Changes made Please Add new Appointment Date";
+				}
+				existingAppo.setAppointmentDate(appointment.getAppointmentDate());
+				session.update(existingAppo);
+				transaction.commit();
+				return "Appointment Updated successfully";
+			} else {
+				return "Appointment with ID : " + appointment.getaId() + " not exist please provide valid Id";
+			}
+		} catch (Exception e) {
+			if (transaction != null)
+				transaction.rollback(); // Rollback on failure
+			throw e; // Re-throw the exception
+		} finally {
+			session.close(); // Ensure the session is closed
 		}
 	}
 
