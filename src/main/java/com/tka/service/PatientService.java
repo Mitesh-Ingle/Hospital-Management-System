@@ -10,7 +10,7 @@ import com.tka.entity.Patient;
 
 @Service
 public class PatientService {
-	
+
 	@Autowired
 	PatientDao patientDao;
 
@@ -20,13 +20,15 @@ public class PatientService {
 	}
 
 	public List<Patient> getPatient() {
-		return patientDao. getPatient();
+		return patientDao.getPatient();
 	}
 
 	public Object getPatientById(Long pId) {
 		return patientDao.getPatientById(pId);
 	}
-	
 
+	public Object getPatientByName(String pName) {
+		return patientDao.getPatientByName(pName);
+	}
 
 }

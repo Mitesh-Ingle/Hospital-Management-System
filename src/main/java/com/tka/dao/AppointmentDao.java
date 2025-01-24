@@ -1,12 +1,16 @@
 package com.tka.dao;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.Parameter;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -87,7 +91,28 @@ public class AppointmentDao {
 		if (appointment != null) {
 			return appointment;
 		} else {
-			return "Appointment with provided ID not found";
+			return "Appointment with provided ID: " + aId + " not found";
+		}
+	}
+
+	public Object getAppointmentByDate(LocalDateTime appointmentDate) {
+		System.err.println(1);
+		Session session = sessionFactory.openSession();
+		System.err.println(2);
+		String hql = "FROM Appointment WHERE appointmentDate = : appointmentDate ";
+		System.err.println(3);
+		Query<Appointment> query = session.createQuery(hql, Appointment.class);
+		System.err.println(4);
+		query.setParameter("appointmentDate", appointmentDate);
+		System.err.println(5);
+		Appointment appointment = query.uniqueResult();
+		System.err.println(6);
+		if (appointment != null) {
+			System.err.println(7);
+			return appointment;
+		} else {
+			System.err.println(8);
+			return "Appointment not available with provided date : " + appointmentDate;
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.tka.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class AppointmentService {
 
 	public Object getAppointmentById(Long aId) {
 		return appointmentDao.getAppointmentById(aId);
+	}
+
+
+	public Object getAppointmentByDate(LocalDateTime appointmentDate) {
+		return appointmentDao.getAppointmentByDate(appointmentDate);
 	}
 	
 	

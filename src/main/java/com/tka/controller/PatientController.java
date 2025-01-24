@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tka.entity.Patient;
@@ -32,9 +33,15 @@ public class PatientController {
 	public List<Patient> getPatient() {
 		return patientService.getPatient();
 	}
-	
+
 	@GetMapping("/get-by-id/{pId}")
 	public Object getPatientById(@PathVariable Long pId) {
 		return patientService.getPatientById(pId);
 	}
+
+	@GetMapping("/get-by-name")
+	public Object getPatientByName(@RequestParam String pName) {
+		return patientService.getPatientByName(pName);
+	}
+
 }

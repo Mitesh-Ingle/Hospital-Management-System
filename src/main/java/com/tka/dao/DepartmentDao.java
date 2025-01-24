@@ -7,6 +7,8 @@ import java.util.Objects;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -56,13 +58,51 @@ public class DepartmentDao {
 
 	public Object getDepartmentById(Long dId) {
 		Session session = sessionFactory.openSession();
-		Department department = session.get(Department.class,dId);
+		Department department = session.get(Department.class, dId);
 
 		if (department != null) {
-			return department; // Return the team if found
+			return department; // Return the department if found
 		} else {
-			return "department with provided ID not found"; // Return a message if not found
+			return "department with provided ID: " + dId + " not found"; // Return a message if not found
 		}
 	}
 
+	public Object getDepartmentByName(String dName) {
+		Session session = sessionFactory.openSession();
+		String hql = "FROM Department WHERE dName = : dName";
+		Query<Department> query = session.createQuery(hql, Department.class);
+		query.setParameter("dName", dName);
+		Department department = query.uniqueResult();
+		if (department != null) {
+			return department;
+		} else {
+			return "No department available with : " + dName + "provided";
+		}
+	}
+
+	public String updateDepartment(Department department) {
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+		Department existingDepartment = session.get(Department.class, department.getdId());
+		if (existingDepartment != null) {
+			// Check if the details are the same
+			if (existingDepartment.getdName().equals(department.getdName())
+					&& existingDepartment.getdDescription().equals(department.getdDescription())) {
+				return "No changes detected. The department name and description are the same.";
+			}
+
+			// Update the department details
+			existingDepartment.setdName(department.getdName());
+			existingDepartment.setdDescription(department.getdDescription());
+
+			// Save the updated department
+			session.update(existingDepartment);
+
+			// Commit the transaction
+			transaction.commit();
+			return "Department updated successfully";
+		} else {
+			return "Department with ID " + department.getdId() + " does not exist. Please provide a valid ID.";
+		}
+	}
 }

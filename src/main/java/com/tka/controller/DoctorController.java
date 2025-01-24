@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tka.entity.Doctor;
@@ -36,5 +37,10 @@ public class DoctorController {
 	@GetMapping("/get-by-id/{id}")
 	public Object getDoctorById(@PathVariable Long id) {
 		return doctorService.getDoctorById(id);
+	}
+	
+	@GetMapping("/get-by-name")
+	public Object getDoctorByName(@RequestParam String name) {
+		return doctorService.getDoctorByName(name);
 	}
 }

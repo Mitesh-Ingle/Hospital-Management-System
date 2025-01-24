@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tka.entity.Department;
@@ -38,6 +40,18 @@ public class DepartmentController {
 	@GetMapping("/get-by-id/{dId}")
 	public Object getDepartmentById(@PathVariable("dId") Long dId) {
 		return departmentService.getDepartmentById(dId);
+	}
+	
+	@GetMapping("/get-by-name")
+	public Object getDepartmentByName(@RequestParam String dName) {
+		return departmentService.getDepartmentByName(dName);
+		
+	}
+	
+	@PutMapping("/update-department")
+	public String updateDepartment(@RequestBody Department department) {
+		return departmentService.updateDepartment(department);
+		
 	}
 
 }

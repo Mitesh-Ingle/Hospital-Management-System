@@ -27,5 +27,9 @@ public class DoctorService {
 	public Object getDoctorById(Long id) {
 		return doctorDao.getDoctorById(id);
 	}
+
+	public Object getDoctorByName(String name) {
+		return doctorDao.getDoctorByName(name);
+	}
 	
 }

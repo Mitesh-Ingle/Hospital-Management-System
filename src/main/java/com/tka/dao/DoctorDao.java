@@ -90,9 +90,22 @@ public class DoctorDao {
 		if (doctor != null) {
 			return doctor;
 		} else {
-			return "Doctor with Id not found Provide valid Id";
+			return "Doctor with Id : " + id + "  " + "not found Provide valid Id";
 		}
 
+	}
+
+	public Object getDoctorByName(String name) {
+		Session session = factory.openSession();
+		String hql = "FROM Doctor WHERE name = :name";
+		Query<Doctor> query = session.createQuery(hql, Doctor.class);
+		query.setParameter("name", name);
+		Doctor doctor = query.uniqueResult();
+		if (doctor != null) {
+			return doctor;
+		} else {
+			return "Doctor not found with Name : " + name;
+		}
 	}
 
 }

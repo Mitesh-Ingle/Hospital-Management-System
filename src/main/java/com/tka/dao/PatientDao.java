@@ -105,7 +105,22 @@ public class PatientDao {
 		if (patient != null) {
 			return patient;
 		} else {
-			return "Patient no found with the provided ID";
+			return "Patient not found with the provided ID: " + pId;
+		}
+	}
+
+	public Object getPatientByName(String pName) {
+		Session session = sessionFactory.openSession();
+		String hql = "FROM Patient WHERE pName = :pName";
+		Query<Patient> query =  session.createQuery(hql , Patient.class);
+		query.setParameter("pName", pName);
+		Patient patient = query.uniqueResult();
+		
+		if (patient != null) {
+			return patient;
+
+		} else {
+			return "Patient With Provided name not available: " + pName;
 		}
 	}
 }

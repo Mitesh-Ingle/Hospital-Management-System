@@ -25,6 +25,14 @@ public class DepartmentService {
 	    }
 	 
 	public Object getDepartmentById(Long dId) {
-		return (Department) departmentDao.getDepartmentById(dId);
+		return departmentDao.getDepartmentById(dId);
+	}
+
+	public Object getDepartmentByName(String dName) {
+		return departmentDao.getDepartmentByName(dName);
+	}
+
+	public String updateDepartment(Department department) {
+		return departmentDao.updateDepartment(department);
 	}
 }
