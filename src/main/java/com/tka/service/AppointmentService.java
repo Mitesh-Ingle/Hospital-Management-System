@@ -40,6 +40,11 @@ public class AppointmentService {
 	public String updateAppointment(Appointment appointment) {
 		return appointmentDao.updateAppointment(appointment);
 	}
+
+
+	public Object deleteAppointment(Long aId) {
+		return appointmentDao.deleteAppointment(aId);
+	}
 	
 	
 	

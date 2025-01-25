@@ -2,6 +2,7 @@ package com.tka.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +26,7 @@ public class Department {
 
 	private String dDescription;
 
-	@OneToMany(mappedBy = "department")
+	@OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Doctor> doctors;
 
@@ -92,9 +93,5 @@ public class Department {
 		return "Department [dId=" + dId + ", dName=" + dName + ", dDescription=" + dDescription + ", doctors=" + doctors
 				+ ", patients=" + patients + "]";
 	}
-	
-	
-	
-	
 
 }

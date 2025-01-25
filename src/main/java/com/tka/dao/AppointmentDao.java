@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.tka.entity.Appointment;
-import com.tka.entity.Department;
 
 @Repository
 public class AppointmentDao {
@@ -139,6 +138,24 @@ public class AppointmentDao {
 			throw e; // Re-throw the exception
 		} finally {
 			session.close(); // Ensure the session is closed
+		}
+	}
+
+	public Object deleteAppointment(Long aId) {
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+
+		// Fetch the Appointment using the provided aId (not as a string)
+		Appointment appointment = session.get(Appointment.class, aId); // Use aId directly, no quotes
+
+		if (appointment != null) {
+			session.delete(appointment);
+			transaction.commit(); // Commit the transaction
+			session.close();
+			return "Appointment Deleted Successfully";
+		} else {
+			session.close(); // Ensure session is closed even in case of no result
+			return "Appointment with provided Id: " + aId + " not found";
 		}
 	}
 

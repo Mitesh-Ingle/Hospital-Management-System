@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.tka.entity.Department;
+import com.tka.entity.Doctor;
+import com.tka.entity.Patient;
 
 @Repository
 public class DepartmentDao {
@@ -106,30 +108,41 @@ public class DepartmentDao {
 		}
 	}
 
-	public String deleteDepartment(Long dId) {
+	public Object deleteDepartment(Long dId) {
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
+		System.err.println(1);
+		try {
+			System.err.println(2);
+			// Fetch the department from the database using the provided dId
+			Department department = session.get(Department.class, dId);
+			System.err.println(3);
+			if (department != null) {
+				System.err.println(4);
+				session.delete(department);
+				System.err.println(5);
 
-		// Fetch the department using the provided ID
-		Department department = session.get(Department.class, dId);
+				System.err.println(6);
+				return "Department and associated records deleted successfully.";
+			} else {
+				System.err.println(7);
+				return "Department not found with Id : " + dId;
 
-		if (department != null) {
-			// Set all doctors associated with the department to have a NULL department_id
-			String hqlUpdateDoctors = "UPDATE Doctor SET department.id = NULL WHERE department.id = :dId";
-			Query query = session.createQuery(hqlUpdateDoctors);
-			query.setParameter("dId", dId);
-			query.executeUpdate(); // Update the doctors to remove department reference
+			}
 
-			// Now, delete the department
-			session.delete(department);
-			transaction.commit(); // Commit the transaction
-			session.close();
-			return "Department with ID " + dId
-					+ " and its associated doctors' department references removed successfully.";
-		} else {
-			// If no department found with the given ID
-			session.close();
-			return "Department with provided ID: " + dId + " not found.";
+		} catch (Exception e) {
+			System.err.println(8);
+			if (transaction != null) {
+				System.err.println(9);
+				transaction.rollback();
+				System.err.println(10);// Rollback in case of an error
+			}
+
+			return "Error deleting department: " + e.getMessage();
+		} finally {
+			System.err.println(11);
+			session.close(); // Always close the session
+			System.err.println(12);
 		}
 	}
 

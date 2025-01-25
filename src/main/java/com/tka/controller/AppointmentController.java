@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,13 @@ public class AppointmentController {
 	public String updateAppointment(@RequestBody Appointment appointment) {
 		return appointmentService.updateAppointment(appointment);
 
+		
 	}
+	
+	@DeleteMapping("/delete-appointment/{aId}")
+	public Object deleteAppointment(@PathVariable("aId") Long aId) {
+		return appointmentService.deleteAppointment(aId);
+	}
+	
 
 }

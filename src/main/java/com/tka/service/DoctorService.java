@@ -35,5 +35,9 @@ public class DoctorService {
 	public String updateDoctor(Doctor doctor) {
 		return doctorDao.updateDoctor(doctor) ;
 	}
+
+	public Object deleteDoctor(Long id) {
+	    return doctorDao.deleteDoctor(id); // This calls the DAO method to delete the doctor
+	}
 	
 }

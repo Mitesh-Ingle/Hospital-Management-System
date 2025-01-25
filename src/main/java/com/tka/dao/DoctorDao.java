@@ -9,9 +9,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
+import org.hibernate.sql.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.tka.controller.DoctorController;
+import com.tka.entity.Appointment;
 import com.tka.entity.Department;
 import com.tka.entity.Doctor;
 
@@ -145,4 +148,26 @@ public class DoctorDao {
 			session.close(); // Ensure the session is closed
 		}
 	}
+
+	public Object deleteDoctor(Long id) {
+		Session session = factory.openSession();
+		Transaction transaction = session.beginTransaction();
+
+		// Fetch the Doctor using the provided id
+		Doctor doctor = session.get(Doctor.class, id); // Use id directly, no quotes
+
+		if (doctor != null) {
+			session.delete(doctor); // Delete the doctor from the database
+			
+			 // Close the session
+			session.saveOrUpdate(doctor);
+			transaction.commit();
+			
+			return "Doctor Deleted Successfully";
+		} else {
+			session.close(); // Ensure session is closed even in case of no result
+			return "Doctor with provided Id: " + id + " not found";
+		}
+	}
+
 }

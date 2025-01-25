@@ -3,6 +3,7 @@ package com.tka.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,11 @@ public class DoctorController {
 	@PutMapping("/update-doctor")
 	public String updateDoctor(@RequestBody Doctor doctor) {
 		return doctorService.updateDoctor(doctor);
+	}
+
+	@DeleteMapping("/delete-doctor/{id}")
+	public Object deleteDoctor(@PathVariable("id") Long id) {
+		return doctorService.deleteDoctor(id); // This calls your service method to delete the doctor
 	}
 
 }
