@@ -162,4 +162,17 @@ public class PatientDao {
 		}
 
 	}
+
+	public String deletePatient(Long pId) {
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+
+		Patient patient = session.get(Patient.class, pId);
+		if (patient != null) {
+			session.delete(patient);
+			return "Patient deleted Successfully";
+		} else {
+			return "Patient not found ID : " + pId;
+		}
+	}
 }

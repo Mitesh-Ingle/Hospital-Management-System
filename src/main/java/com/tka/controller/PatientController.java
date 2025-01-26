@@ -5,6 +5,7 @@ import java.util.List;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,5 +49,10 @@ public class PatientController {
 	@PutMapping("/update-patient")
 	public String updatePatient(@RequestBody Patient patient) {
 		return patientService.updatePatient(patient);
+	}
+
+	@DeleteMapping("/delete-patient/{pId}")
+	public String deletePatient(@PathVariable("pId") Long pId) {
+		return patientService.deletePatient(pId);
 	}
 }

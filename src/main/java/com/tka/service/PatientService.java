@@ -35,4 +35,8 @@ public class PatientService {
 		return patientDao.updatePatient(patient);
 	}
 
+	public String deletePatient(Long pId) {
+		return patientDao.deletePatient(pId);
+	}
+
 }
