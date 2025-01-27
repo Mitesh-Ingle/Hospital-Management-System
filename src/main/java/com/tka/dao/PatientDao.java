@@ -38,51 +38,40 @@ public class PatientDao {
 		if (patient.getpAddress() == null || patient.getpAddress().isEmpty()) {
 			return "Patient address cannot be empty";
 		}
+
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		System.err.println(session);
+
 		// Check if patients exist with the same email
 		Criteria emailCriteria = session.createCriteria(Patient.class);
 		emailCriteria.add(Restrictions.eq("pEmail", patient.getpEmail()));
 		List<Patient> emailMatches = emailCriteria.list();
-		System.err.println(1);
 
 		// Check if patients exist with the same contact
 		Criteria contactCriteria = session.createCriteria(Patient.class);
 		contactCriteria.add(Restrictions.eq("pContact", patient.getpContact()));
 		List<Patient> contactMatches = contactCriteria.list();
-		System.err.println(2);
 
 		// Validate email and contact independently
 		if (!emailMatches.isEmpty() && !contactMatches.isEmpty()) {
 			session.close();
-			System.err.println(3);
-
-			return "Both email and contact already exist. Please provide different email and contact.";
-
+			return "Email and contact already exist. Please provide a different email and contact.";
 		} else if (!emailMatches.isEmpty()) {
 			session.close();
-			System.err.println(4);
-
 			return "The email " + patient.getpEmail() + " already exists. Please provide a different email.";
 		} else if (!contactMatches.isEmpty()) {
 			session.close();
-			System.err.println(5);
-
-			return "The contact " + patient.getpContact() + " already exists. Please provide a different contact.";
+			return "The contact number " + patient.getpContact()
+					+ " already exists. Please provide a different contact.";
 		}
 
 		// Save or update the patient if both email and contact are unique
 		session.saveOrUpdate(patient);
-		System.err.println(6);
-
 		session.getTransaction().commit();
-		System.err.println(7);
-
 		session.close();
-		System.err.println(8);
 
-		return "Patient added successfully.";
+		return "Patient added successfully";
 	}
 
 	public List<Patient> getPatient() {
@@ -113,13 +102,13 @@ public class PatientDao {
 		String hql = "FROM Patient WHERE pName = :pName";
 		Query<Patient> query = session.createQuery(hql, Patient.class);
 		query.setParameter("pName", pName);
-		Patient patient = query.uniqueResult();
 
-		if (patient != null) {
-			return patient;
+		List<Patient> patients = query.list(); // Fetch all patients with the given name
 
+		if (!patients.isEmpty()) {
+			return patients; // Return the list of patients
 		} else {
-			return "Patient With Provided name not available: " + pName;
+			return "No patients found with the provided name: " + pName;
 		}
 	}
 
@@ -163,16 +152,36 @@ public class PatientDao {
 
 	}
 
-	public String deletePatient(Long pId) {
+	public Object deletePatient(Long pId) {
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
 
-		Patient patient = session.get(Patient.class, pId);
-		if (patient != null) {
-			session.delete(patient);
-			return "Patient deleted Successfully";
-		} else {
-			return "Patient not found ID : " + pId;
+		try {
+			// Fetch the Patient by ID
+			Patient patient = session.get(Patient.class, pId);
+
+			if (patient != null) {
+				// Break the relationship with Department
+				if (patient.getDepartment() != null) {
+					patient.getDepartment().getPatients().remove(patient);
+					patient.setDepartment(null);
+				}
+
+				// Delete the Patient
+				session.delete(patient);
+				transaction.commit();
+				return "Patient deleted Successfully";
+			} else {
+				return "Patient not found with ID: " + pId;
+			}
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			return "Error deleting Patient: " + e.getMessage();
+		} finally {
+			session.close();
 		}
 	}
+
 }

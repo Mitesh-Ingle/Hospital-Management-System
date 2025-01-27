@@ -104,11 +104,13 @@ public class DoctorDao {
 		String hql = "FROM Doctor WHERE name = :name";
 		Query<Doctor> query = session.createQuery(hql, Doctor.class);
 		query.setParameter("name", name);
-		Doctor doctor = query.uniqueResult();
-		if (doctor != null) {
-			return doctor;
+
+		List<Doctor> doctors = query.list(); // Fetch all doctors with the given name
+
+		if (!doctors.isEmpty()) {
+			return doctors; // Return the list of doctors
 		} else {
-			return "Doctor not found with Name : " + name;
+			return "No doctors found with the provided name: " + name;
 		}
 	}
 
@@ -158,11 +160,10 @@ public class DoctorDao {
 
 		if (doctor != null) {
 			session.delete(doctor); // Delete the doctor from the database
-			
-			 // Close the session
-			session.saveOrUpdate(doctor);
+
+			// Close the session
 			transaction.commit();
-			
+
 			return "Doctor Deleted Successfully";
 		} else {
 			session.close(); // Ensure session is closed even in case of no result

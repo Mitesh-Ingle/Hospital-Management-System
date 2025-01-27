@@ -52,7 +52,7 @@ public class PatientController {
 	}
 
 	@DeleteMapping("/delete-patient/{pId}")
-	public String deletePatient(@PathVariable("pId") Long pId) {
+	public Object deletePatient(@PathVariable("pId") Long pId) {
 		return patientService.deletePatient(pId);
 	}
 }

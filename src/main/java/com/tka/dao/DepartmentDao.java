@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -25,23 +29,35 @@ public class DepartmentDao {
 	public String addDepartment(Department department) {
 		System.err.println("In department Dao");
 		System.err.println(department);
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		// Fetch all departments and check if any has the same name
-		List<Department> departments = session.createCriteria(Department.class).list();
-		for (Department existingDepartment : departments) {
-			// Use Objects.equals() to safely handle null values
-			if (Objects.equals(existingDepartment.getdName(), department.getdName())) {
+
+		// Use try-with-resources to ensure session is closed even if an exception
+		// occurs
+		try (Session session = sessionFactory.openSession()) {
+			session.beginTransaction();
+
+			// Check if a department with the same name already exists using Criteria API
+			CriteriaBuilder cb = session.getCriteriaBuilder();
+			CriteriaQuery<Department> cq = cb.createQuery(Department.class);
+			Root<Department> root = cq.from(Department.class);
+			cq.select(root).where(cb.equal(root.get("dName"), department.getdName()));
+			List<Department> existingDepartments = session.createQuery(cq).getResultList();
+
+			// If a department with the same name exists, return a message
+			if (!existingDepartments.isEmpty()) {
 				session.getTransaction().commit();
-				session.close();
-				return "Department with Name : " + department.getdName() + " already exists.";
+				return "Department with Name: " + department.getdName() + " already exists.";
 			}
+
+			// If no existing department, save the new department
+			session.saveOrUpdate(department);
+			session.getTransaction().commit();
+
+			return "Department added successfully.";
+		} catch (Exception e) {
+			// Log the exception and handle the rollback if needed
+			e.printStackTrace();
+			return "Error adding department: " + e.getMessage();
 		}
-		// If no existing Department, save the new Department
-		session.saveOrUpdate(department);
-		session.getTransaction().commit();
-		session.close();
-		return "Department added successfully.";
 	}
 
 	public List<Department> getAllDepartments() {
@@ -71,14 +87,16 @@ public class DepartmentDao {
 
 	public Object getDepartmentByName(String dName) {
 		Session session = sessionFactory.openSession();
-		String hql = "FROM Department WHERE dName = : dName";
+		String hql = "FROM Department WHERE dName = :dName"; // Fixed space issue
 		Query<Department> query = session.createQuery(hql, Department.class);
 		query.setParameter("dName", dName);
-		Department department = query.uniqueResult();
-		if (department != null) {
-			return department;
+
+		List<Department> departments = query.list(); // Fetch all matching departments
+
+		if (!departments.isEmpty()) {
+			return departments; // Return the list of departments
 		} else {
-			return "No department available with : " + dName + "provided";
+			return "No department available with name: " + dName;
 		}
 	}
 
@@ -117,17 +135,35 @@ public class DepartmentDao {
 			// Fetch the department from the database using the provided dId
 			Department department = session.get(Department.class, dId);
 			System.err.println(3);
+
 			if (department != null) {
 				System.err.println(4);
+				// Manually delete associated patients
+				if (department.getPatients() != null && !department.getPatients().isEmpty()) {
+					for (Patient patient : department.getPatients()) {
+						patient.setDepartment(null); // Break relationship with department
+						session.delete(patient); // Delete patient manually
+					}
+				}
+
+				// Manually delete associated doctors
+				if (department.getDoctors() != null && !department.getDoctors().isEmpty()) {
+					for (Doctor doctor : department.getDoctors()) {
+						doctor.setDepartment(null); // Break relationship with department
+						session.delete(doctor); // Delete doctor manually
+					}
+				}
+
+				// Now delete the department
 				session.delete(department);
+				transaction.commit();
 				System.err.println(5);
 
 				System.err.println(6);
-				return "Department and associated records deleted successfully.";
+				return "Department records deleted successfully.";
 			} else {
 				System.err.println(7);
-				return "Department not found with Id : " + dId;
-
+				return "There is no department with ID: " + dId;
 			}
 
 		} catch (Exception e) {
@@ -135,7 +171,7 @@ public class DepartmentDao {
 			if (transaction != null) {
 				System.err.println(9);
 				transaction.rollback();
-				System.err.println(10);// Rollback in case of an error
+				System.err.println(10); // Rollback in case of an error
 			}
 
 			return "Error deleting department: " + e.getMessage();

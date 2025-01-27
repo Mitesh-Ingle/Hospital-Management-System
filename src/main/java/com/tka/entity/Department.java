@@ -30,7 +30,7 @@ public class Department {
 	@JsonManagedReference
 	private List<Doctor> doctors;
 
-	@OneToMany(mappedBy = "department")
+	@OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Patient> patients;
 

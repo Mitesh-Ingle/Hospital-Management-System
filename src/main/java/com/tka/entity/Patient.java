@@ -1,7 +1,9 @@
 package com.tka.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +35,7 @@ public class Patient {
 	@Column(nullable = false)
 	private String pEmail;
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, cascade = CascadeType.ALL, fetch =  FetchType.EAGER)
 	@JoinColumn(name = "department_id")
 	@JsonBackReference
 	private Department department;
