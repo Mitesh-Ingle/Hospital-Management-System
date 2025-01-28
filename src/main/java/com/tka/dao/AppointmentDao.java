@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.tka.entity.Appointment;
+import com.tka.entity.Doctor;
+import com.tka.entity.Patient;
 
 @Repository
 public class AppointmentDao {
@@ -23,50 +25,49 @@ public class AppointmentDao {
 
 	public String addAppointment(Appointment appointment) {
 		System.err.println("In add appointment DAO");
-		System.err.println(1);
+
 		// Check if appointmentDate is null
 		if (appointment.getAppointmentDate() == null) {
-			System.err.println(2);
 			return "Appointment Date cannot be empty";
 		}
 		System.err.println("Input Appointment Date: " + appointment.getAppointmentDate());
+
 		try (Session session = sessionFactory.openSession()) {
-			System.err.println(3);
+			// Check if the doctor exists
+			Doctor doctor = session.get(Doctor.class, appointment.getDoctor().getId());
+			if (doctor == null) {
+				return "No doctor found with ID: " + appointment.getDoctor().getId();
+			}
+
+			// Check if the patient exists
+			Patient patient = session.get(Patient.class, appointment.getPatient().getpId());
+			if (patient == null) {
+				return "No patient found with ID: " + appointment.getPatient().getpId();
+			}
+
 			session.beginTransaction();
-			System.err.println(4);
 
 			// Debugging: Print the type and value of appointmentDate
 			System.err.println("Appointment Date Type: " + appointment.getAppointmentDate().getClass().getName());
-			System.err.println(5);
 			System.err.println("Appointment Date Value: " + appointment.getAppointmentDate());
-			System.err.println(6);
+
 			// Check for existing appointment with the same date
 			Criteria criteria = session.createCriteria(Appointment.class);
-			System.err.println(7);
 			criteria.add(Restrictions.eq("appointmentDate", appointment.getAppointmentDate()));
-			System.err.println(8);
 			Appointment existingAppo = (Appointment) criteria.uniqueResult();
-			System.err.println(9);
-			System.err.println("Existing Appointment: " + existingAppo);
-			System.err.println(10);
+
 			if (existingAppo != null) {
-				System.err.println(11);
 				// If appointment exists, return a message
 				return "Appointment already present. Please provide a different date: "
 						+ appointment.getAppointmentDate();
 			} else {
-				System.err.println(12);
 				// If no existing appointment is found, save the new appointment
 				session.saveOrUpdate(appointment);
-				System.err.println(13);
 				session.getTransaction().commit();
-				System.err.println(14);
 				return "Appointment Successfully Added";
 			}
 		} catch (Exception e) {
-			System.err.println(15);
 			e.printStackTrace();
-			System.err.println(16);
 			return "Failed to add appointment due to an error: " + e.getMessage();
 		}
 	}
